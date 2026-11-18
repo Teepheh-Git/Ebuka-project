@@ -10,7 +10,7 @@ import {
   Settings,
   LifeBuoy,
 } from "lucide-react";
-import { mockAdmin } from "@/lib/mock-data";
+import { useCurrentUser } from "@/components/layout/user-context";
 
 // The only five navigation links the PRD asks for.
 export const NAV_LINKS = [
@@ -25,8 +25,9 @@ export const NAV_LINKS = [
 // `onNavigate` lets the mobile drawer close itself after a link is tapped.
 export default function Sidebar({ onNavigate }) {
   const pathname = usePathname();
+  const user = useCurrentUser();
 
-  const initials = mockAdmin.full_name
+  const initials = (user?.full_name || "")
     .split(" ")
     .map((part) => part[0])
     .join("")
@@ -85,8 +86,8 @@ export default function Sidebar({ onNavigate }) {
             {initials}
           </div>
           <div className="min-w-0 flex-1">
-            <p className="truncate text-sm font-medium text-slate-900">{mockAdmin.full_name}</p>
-            <p className="truncate text-xs text-slate-500">{mockAdmin.email}</p>
+            <p className="truncate text-sm font-medium text-slate-900">{user?.full_name}</p>
+            <p className="truncate text-xs text-slate-500">{user?.email}</p>
           </div>
         </div>
       </div>

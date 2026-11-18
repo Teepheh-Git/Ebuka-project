@@ -1,10 +1,14 @@
+"use client";
+
 import MobileNav from "./mobile-nav";
-import { mockAdmin } from "@/lib/mock-data";
+import { useCurrentUser } from "@/components/layout/user-context";
 
 // Top bar of every dashboard page: menu button (mobile), page title, optional action and admin avatar.
 export default function PageHeader({ title, subtitle, action }) {
+  const user = useCurrentUser();
+
   // Initials shown in the avatar circle, e.g. "Ada Okafor" -> "AO".
-  const initials = mockAdmin.full_name
+  const initials = (user?.full_name || "")
     .split(" ")
     .map((part) => part[0])
     .join("")
@@ -25,12 +29,12 @@ export default function PageHeader({ title, subtitle, action }) {
         <div className="flex shrink-0 items-center gap-2 sm:gap-3">
           {action}
           <div className="hidden text-right lg:block">
-            <p className="text-sm font-medium text-slate-900">{mockAdmin.full_name}</p>
+            <p className="text-sm font-medium text-slate-900">{user?.full_name}</p>
             <p className="text-xs text-slate-500">Administrator</p>
           </div>
           <div
             className="flex h-10 w-10 items-center justify-center rounded-full bg-slate-900 text-sm font-semibold text-white ring-4 ring-slate-100"
-            aria-label={`Signed in as ${mockAdmin.full_name}`}
+            aria-label={`Signed in as ${user?.full_name}`}
             role="img"
           >
             {initials}

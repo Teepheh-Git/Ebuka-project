@@ -4,22 +4,22 @@ import PageHeader from "@/components/layout/page-header";
 import StatCard from "@/components/dashboard/stat-card";
 import TicketTable from "@/components/tickets/ticket-table";
 import EmptyState from "@/components/tickets/empty-state";
-import { mockAdmin } from "@/lib/mock-data";
+import { getCurrentUser } from "@/lib/current-user";
 import { listTickets } from "@/lib/tickets";
 
 
 export default async function DashboardPage() {
-  const mockTickets = await listTickets();
-  const total = mockTickets.length;
-  const open = mockTickets.filter((t) => t.status === "Open").length;
-  const inProgress = mockTickets.filter((t) => t.status === "In Progress").length;
-  const resolved = mockTickets.filter((t) => t.status === "Resolved").length;
+  const [user, tickets] = await Promise.all([getCurrentUser(), listTickets()]);
+  const total = tickets.length;
+  const open = tickets.filter((t) => t.status === "Open").length;
+  const inProgress = tickets.filter((t) => t.status === "In Progress").length;
+  const resolved = tickets.filter((t) => t.status === "Resolved").length;
 
   // Share of each status, used for the breakdown bar (0 when there are no tickets).
   const share = (count) => (total === 0 ? 0 : Math.round((count / total) * 100));
 
   // Newest first, keep only five.
-  const recentTickets = [...mockTickets]
+  const recentTickets = [...tickets]
     .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
     .slice(0, 5);
 
@@ -48,7 +48,7 @@ export default async function DashboardPage() {
         <section className="grid gap-6 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6 lg:grid-cols-5">
           <div className="flex flex-col justify-between gap-4 lg:col-span-2">
             <div>
-              <p className="text-sm font-medium text-blue-600">Welcome back, {mockAdmin.display_name}</p>
+              <p className="text-sm font-medium text-blue-600">Welcome back, {user?.display_name}</p>
               <h2 className="mt-1 text-2xl font-semibold tracking-tight text-slate-900">
                 {open === 0 ? "No open tickets right now" : `${open} open ${open === 1 ? "ticket" : "tickets"} to review`}
               </h2>

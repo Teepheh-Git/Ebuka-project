@@ -37,17 +37,34 @@ create table if not exists public.ticket_updates (
 
 create index if not exists ticket_updates_ticket_id_idx on public.ticket_updates (ticket_id);
 
--- Row-level security. Stage 3 uses the publishable (anon) key only, so the
--- policies below allow the app's anon role to read and write. Real sign-in
--- with per-admin rules comes later, when Supabase Auth is added.
+-- Row-level security. Only signed-in admins (role "authenticated") can read or
+-- change tickets. The publishable (anon) key alone cannot touch the data.
+-- The drop statements remove the older anon-only policies from Stage 3, so the
+-- file can be run again on a project that already has them.
 alter table public.tickets enable row level security;
 alter table public.ticket_updates enable row level security;
 
-create policy "anon can read tickets" on public.tickets for select to anon using (true);
-create policy "anon can insert tickets" on public.tickets for insert to anon with check (true);
-create policy "anon can update tickets" on public.tickets for update to anon using (true) with check (true);
-create policy "anon can delete tickets" on public.tickets for delete to anon using (true);
+drop policy if exists "anon can read tickets" on public.tickets;
+drop policy if exists "anon can insert tickets" on public.tickets;
+drop policy if exists "anon can update tickets" on public.tickets;
+drop policy if exists "anon can delete tickets" on public.tickets;
+drop policy if exists "anon can read ticket updates" on public.ticket_updates;
+drop policy if exists "anon can insert ticket updates" on public.ticket_updates;
+drop policy if exists "anon can delete ticket updates" on public.ticket_updates;
 
-create policy "anon can read ticket updates" on public.ticket_updates for select to anon using (true);
-create policy "anon can insert ticket updates" on public.ticket_updates for insert to anon with check (true);
-create policy "anon can delete ticket updates" on public.ticket_updates for delete to anon using (true);
+drop policy if exists "admins can read tickets" on public.tickets;
+drop policy if exists "admins can insert tickets" on public.tickets;
+drop policy if exists "admins can update tickets" on public.tickets;
+drop policy if exists "admins can delete tickets" on public.tickets;
+drop policy if exists "admins can read ticket updates" on public.ticket_updates;
+drop policy if exists "admins can insert ticket updates" on public.ticket_updates;
+drop policy if exists "admins can delete ticket updates" on public.ticket_updates;
+
+create policy "admins can read tickets" on public.tickets for select to authenticated using (true);
+create policy "admins can insert tickets" on public.tickets for insert to authenticated with check (true);
+create policy "admins can update tickets" on public.tickets for update to authenticated using (true) with check (true);
+create policy "admins can delete tickets" on public.tickets for delete to authenticated using (true);
+
+create policy "admins can read ticket updates" on public.ticket_updates for select to authenticated using (true);
+create policy "admins can insert ticket updates" on public.ticket_updates for insert to authenticated with check (true);
+create policy "admins can delete ticket updates" on public.ticket_updates for delete to authenticated using (true);

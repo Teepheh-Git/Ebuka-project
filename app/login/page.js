@@ -1,18 +1,18 @@
 "use client";
 
-import { useState } from "react";
+import { useActionState, useState } from "react";
 import { Eye, EyeOff, LifeBuoy } from "lucide-react";
+import { signIn } from "@/app/auth-actions";
 
-// Stage 2: the form only checks the inputs. Supabase sign-in is added in Stage 4.
+// Signs in through Supabase Auth. On success the server redirects to the dashboard.
 export default function LoginPage() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [errors, setErrors] = useState({});
+  const [state, formAction, isPending] = useActionState(signIn, {});
 
   function handleSubmit(event) {
-    event.preventDefault();
-
     const newErrors = {};
     if (!email.trim()) {
       newErrors.email = "Please enter your email address.";
@@ -24,6 +24,7 @@ export default function LoginPage() {
     }
 
     setErrors(newErrors);
+    if (Object.keys(newErrors).length > 0) event.preventDefault();
   }
 
   return (
@@ -37,7 +38,7 @@ export default function LoginPage() {
           <p className="text-sm text-slate-500">Sign in to manage customer complaints.</p>
         </div>
 
-        <form onSubmit={handleSubmit} noValidate className="flex flex-col gap-4">
+        <form action={formAction} onSubmit={handleSubmit} noValidate className="flex flex-col gap-4">
           <div className="flex flex-col gap-1.5">
             <label htmlFor="email" className="text-sm font-medium text-slate-700">
               Email address
@@ -94,11 +95,18 @@ export default function LoginPage() {
             ) : null}
           </div>
 
+          {state.error ? (
+            <p role="alert" className="rounded-lg bg-rose-50 px-3 py-2 text-sm text-rose-700">
+              {state.error}
+            </p>
+          ) : null}
+
           <button
             type="submit"
-            className="mt-2 rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-medium text-white shadow-sm shadow-blue-600/20 transition-colors hover:bg-blue-700"
+            disabled={isPending}
+            className="mt-2 rounded-lg bg-blue-600 px-4 py-2.5 text-sm font-medium text-white shadow-sm shadow-blue-600/20 transition-colors hover:bg-blue-700 disabled:opacity-60"
           >
-            Log In
+            {isPending ? "Signing in..." : "Log In"}
           </button>
         </form>
       </div>

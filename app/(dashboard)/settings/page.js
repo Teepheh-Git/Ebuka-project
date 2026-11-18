@@ -1,26 +1,35 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useTransition } from "react";
 import { LogOut } from "lucide-react";
 import PageHeader from "@/components/layout/page-header";
-import { mockAdmin } from "@/lib/mock-data";
+import { useCurrentUser } from "@/components/layout/user-context";
+import { signOut, updateDisplayName } from "@/app/auth-actions";
 
-// Stage 2: changes stay in the page state only. Saving and real logout come in Stages 4 and 5.
+// Shows the signed-in user's profile from Supabase Auth, saves the display name and logs out.
 export default function SettingsPage() {
-  const [displayName, setDisplayName] = useState(mockAdmin.display_name);
-  const [draftName, setDraftName] = useState(mockAdmin.display_name);
+  const user = useCurrentUser();
+  const [displayName, setDisplayName] = useState(user?.display_name || "");
+  const [draftName, setDraftName] = useState(user?.display_name || "");
   const [isEditing, setIsEditing] = useState(false);
   const [message, setMessage] = useState("");
+  const [error, setError] = useState("");
+  const [isPending, startTransition] = useTransition();
 
   function handleSave(event) {
     event.preventDefault();
-    if (!draftName.trim()) {
-      setMessage("Display name cannot be empty.");
-      return;
-    }
-    setDisplayName(draftName.trim());
-    setIsEditing(false);
-    setMessage("Display name updated in the mock view.");
+    setMessage("");
+    setError("");
+    startTransition(async () => {
+      const result = await updateDisplayName(draftName);
+      if (result.error) {
+        setError(result.error);
+        return;
+      }
+      setDisplayName(result.name);
+      setIsEditing(false);
+      setMessage("Display name updated.");
+    });
   }
 
   return (
@@ -32,17 +41,22 @@ export default function SettingsPage() {
             {message}
           </p>
         ) : null}
+        {error ? (
+          <p role="alert" className="rounded-lg bg-red-50 px-4 py-3 text-sm text-red-700">
+            {error}
+          </p>
+        ) : null}
 
         <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
           <h2 className="mb-4 text-base font-semibold text-slate-900">Profile</h2>
           <dl className="flex flex-col gap-4 text-sm">
             <div>
               <dt className="text-xs font-medium uppercase tracking-wide text-slate-500">Full Name</dt>
-              <dd className="mt-1 text-slate-900">{mockAdmin.full_name}</dd>
+              <dd className="mt-1 text-slate-900">{user?.full_name}</dd>
             </div>
             <div>
               <dt className="text-xs font-medium uppercase tracking-wide text-slate-500">Email</dt>
-              <dd className="mt-1 text-slate-900">{mockAdmin.email}</dd>
+              <dd className="mt-1 text-slate-900">{user?.email}</dd>
             </div>
             <div>
               <dt className="text-xs font-medium uppercase tracking-wide text-slate-500">Display Name</dt>
@@ -64,8 +78,12 @@ export default function SettingsPage() {
                 />
               </div>
               <div className="flex gap-2">
-                <button type="submit" className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700">
-                  Save Display Name
+                <button
+                  type="submit"
+                  disabled={isPending}
+                  className="rounded-lg bg-blue-600 px-4 py-2 text-sm font-medium text-white hover:bg-blue-700 disabled:opacity-60"
+                >
+                  {isPending ? "Saving..." : "Save Display Name"}
                 </button>
                 <button
                   type="button"
@@ -83,6 +101,8 @@ export default function SettingsPage() {
             <button
               type="button"
               onClick={() => {
+                setMessage("");
+                setError("");
                 setDraftName(displayName);
                 setIsEditing(true);
               }}
@@ -96,10 +116,12 @@ export default function SettingsPage() {
         <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
           <h2 className="mb-2 text-base font-semibold text-slate-900">Account</h2>
           <p className="mb-4 text-sm text-slate-500">Log out of the Ploy Support Desk on this device.</p>
-          <button type="button" className="inline-flex items-center gap-2 rounded-lg bg-slate-900 px-4 py-2 text-sm font-medium text-white hover:bg-slate-800">
-            <LogOut className="h-4 w-4" aria-hidden="true" />
-            Log Out
-          </button>
+          <form action={signOut}>
+            <button type="submit" className="inline-flex items-center gap-2 rounded-lg bg-slate-900 px-4 py-2 text-sm font-medium text-white hover:bg-slate-800">
+              <LogOut className="h-4 w-4" aria-hidden="true" />
+              Log Out
+            </button>
+          </form>
         </section>
       </main>
     </>
