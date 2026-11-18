@@ -72,6 +72,7 @@ export default function SettingsPage() {
                 </label>
                 <input
                   id="display-name"
+                  placeholder="Enter a display name"
                   value={draftName}
                   onChange={(event) => setDraftName(event.target.value)}
                   className="rounded-lg border border-slate-300 px-3 py-2 text-sm focus:border-blue-500 focus:outline-none focus:ring-2 focus:ring-blue-100"

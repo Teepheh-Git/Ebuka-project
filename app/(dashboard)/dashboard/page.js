@@ -5,11 +5,11 @@ import StatCard from "@/components/dashboard/stat-card";
 import TicketTable from "@/components/tickets/ticket-table";
 import EmptyState from "@/components/tickets/empty-state";
 import { getCurrentUser } from "@/lib/current-user";
-import { listTickets } from "@/lib/tickets";
+import { listTicketsOnServer } from "@/lib/tickets-server";
 
 
 export default async function DashboardPage() {
-  const [user, tickets] = await Promise.all([getCurrentUser(), listTickets()]);
+  const [user, tickets] = await Promise.all([getCurrentUser(), listTicketsOnServer()]);
   const total = tickets.length;
   const open = tickets.filter((t) => t.status === "Open").length;
   const inProgress = tickets.filter((t) => t.status === "In Progress").length;

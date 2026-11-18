@@ -1,13 +1,13 @@
 import { notFound } from "next/navigation";
 import PageHeader from "@/components/layout/page-header";
 import TicketForm from "@/components/tickets/ticket-form";
-import { getTicket } from "@/lib/tickets";
+import { getTicketOnServer } from "@/lib/tickets-server";
 
 // Same form as New Ticket, pre-filled with the existing values.
 
 export default async function EditTicketPage({ params }) {
   const { id } = await params;
-  const ticket = await getTicket(id);
+  const ticket = await getTicketOnServer(id);
 
   if (!ticket) {
     notFound();

@@ -48,6 +48,7 @@ export default function LoginPage() {
               name="email"
               type="email"
               autoComplete="email"
+              placeholder="you@example.com"
               value={email}
               onChange={(event) => setEmail(event.target.value)}
               aria-invalid={errors.email ? "true" : "false"}
@@ -71,6 +72,7 @@ export default function LoginPage() {
                 name="password"
                 type={showPassword ? "text" : "password"}
                 autoComplete="current-password"
+                placeholder="Enter your password"
                 value={password}
                 onChange={(event) => setPassword(event.target.value)}
                 aria-invalid={errors.password ? "true" : "false"}

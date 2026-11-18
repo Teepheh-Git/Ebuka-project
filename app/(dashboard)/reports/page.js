@@ -1,7 +1,7 @@
 import PageHeader from "@/components/layout/page-header";
 import StatCard from "@/components/dashboard/stat-card";
 import { CATEGORIES, STATUSES } from "@/lib/constants";
-import { listTickets } from "@/lib/tickets";
+import { listTicketsOnServer } from "@/lib/tickets-server";
 
 
 // Counts are computed in the browser-free server render from the ticket list.
@@ -13,7 +13,7 @@ function countBy(tickets, field, values) {
 }
 
 export default async function ReportsPage() {
-  const mockTickets = await listTickets();
+  const mockTickets = await listTicketsOnServer();
   const total = mockTickets.length;
   const byStatus = countBy(mockTickets, "status", STATUSES);
   const byCategory = countBy(mockTickets, "category", CATEGORIES);

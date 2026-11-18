@@ -9,19 +9,19 @@ import AddUpdateForm from "@/components/tickets/add-update-form";
 import ResolveButton from "@/components/tickets/resolve-button";
 import DeleteTicketButton from "@/components/tickets/delete-ticket-button";
 import { formatDate } from "@/components/tickets/ticket-table";
-import { getTicket, listUpdates } from "@/lib/tickets";
+import { getTicketOnServer, listUpdatesOnServer } from "@/lib/tickets-server";
 
 
 // In Next.js 16, dynamic route params arrive as a Promise, so they must be awaited.
 export default async function TicketDetailsPage({ params }) {
   const { id } = await params;
-  const ticket = await getTicket(id);
+  const ticket = await getTicketOnServer(id);
 
   if (!ticket) {
     notFound();
   }
 
-  const updates = await listUpdates(id);
+  const updates = await listUpdatesOnServer(id);
 
   return (
     <>

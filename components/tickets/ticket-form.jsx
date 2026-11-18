@@ -84,15 +84,15 @@ export default function TicketForm({ ticketId, initialValues, cancelHref, submit
         <legend className="mb-1 text-sm font-semibold text-slate-900">Customer Information</legend>
 
         <Field label="Customer Name" required htmlFor="customer_name" error={errors.customer_name}>
-          <input id="customer_name" value={form.customer_name} onChange={(e) => updateField("customer_name", e.target.value)} className={inputClass} />
+          <input id="customer_name" placeholder="e.g. Jane Doe" value={form.customer_name} onChange={(e) => updateField("customer_name", e.target.value)} className={inputClass} />
         </Field>
 
         <Field label="Email Address" htmlFor="customer_email" error={errors.customer_email}>
-          <input id="customer_email" type="email" value={form.customer_email} onChange={(e) => updateField("customer_email", e.target.value)} className={inputClass} />
+          <input id="customer_email" type="email" placeholder="name@example.com" value={form.customer_email} onChange={(e) => updateField("customer_email", e.target.value)} className={inputClass} />
         </Field>
 
         <Field label="Phone Number" htmlFor="customer_phone">
-          <input id="customer_phone" type="tel" value={form.customer_phone} onChange={(e) => updateField("customer_phone", e.target.value)} className={inputClass} />
+          <input id="customer_phone" type="tel" placeholder="e.g. +234 800 000 0000" value={form.customer_phone} onChange={(e) => updateField("customer_phone", e.target.value)} className={inputClass} />
         </Field>
       </fieldset>
 
@@ -100,11 +100,11 @@ export default function TicketForm({ ticketId, initialValues, cancelHref, submit
         <legend className="mb-1 text-sm font-semibold text-slate-900">Complaint Information</legend>
 
         <Field label="Complaint Subject" required htmlFor="subject" error={errors.subject} wide>
-          <input id="subject" value={form.subject} onChange={(e) => updateField("subject", e.target.value)} className={inputClass} />
+          <input id="subject" placeholder="A short summary of the complaint" value={form.subject} onChange={(e) => updateField("subject", e.target.value)} className={inputClass} />
         </Field>
 
         <Field label="Complaint Description" required htmlFor="description" error={errors.description} wide>
-          <textarea id="description" rows={5} value={form.description} onChange={(e) => updateField("description", e.target.value)} className={inputClass} />
+          <textarea id="description" rows={5} placeholder="What the customer reported, in their own words where possible" value={form.description} onChange={(e) => updateField("description", e.target.value)} className={inputClass} />
         </Field>
 
         <Field label="Category" required htmlFor="category" error={errors.category}>
