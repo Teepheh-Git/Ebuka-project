@@ -1,4 +1,5 @@
 import { Suspense } from "react";
+import { connection } from "next/server";
 import Sidebar from "@/components/layout/sidebar";
 import { UserProvider } from "@/components/layout/user-context";
 import { getCurrentUser } from "@/lib/current-user";
@@ -17,6 +18,8 @@ export default function DashboardLayout({ children }) {
 // Reads the signed-in user (needs cookies, so it runs at request time) and makes it
 // available to the sidebar, header and pages through UserProvider.
 async function Shell({ children }) {
+  // Marks this shell as request-time so Next.js does not try to prerender it.
+  await connection();
   const user = await getCurrentUser();
 
   return (
