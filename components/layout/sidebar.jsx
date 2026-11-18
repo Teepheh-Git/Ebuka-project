@@ -9,6 +9,7 @@ import {
   BarChart3,
   Settings,
   LifeBuoy,
+  User,
 } from "lucide-react";
 import { useCurrentUser } from "@/components/layout/user-context";
 
@@ -83,10 +84,10 @@ export default function Sidebar({ onNavigate }) {
       <div className="m-3 mt-6 rounded-xl border border-slate-200 bg-slate-50 p-3">
         <div className="flex items-center gap-3">
           <div className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-slate-900 text-xs font-semibold text-white">
-            {initials}
+            {initials || <User className="h-4 w-4" aria-hidden="true" />}
           </div>
           <div className="min-w-0 flex-1">
-            <p className="truncate text-sm font-medium text-slate-900">{user?.full_name}</p>
+            {user?.full_name ? <p className="truncate text-sm font-medium text-slate-900">{user.full_name}</p> : null}
             <p className="truncate text-xs text-slate-500">{user?.email}</p>
           </div>
         </div>

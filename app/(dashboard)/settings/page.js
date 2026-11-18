@@ -50,10 +50,12 @@ export default function SettingsPage() {
         <section className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6">
           <h2 className="mb-4 text-base font-semibold text-slate-900">Profile</h2>
           <dl className="flex flex-col gap-4 text-sm">
-            <div>
-              <dt className="text-xs font-medium uppercase tracking-wide text-slate-500">Full Name</dt>
-              <dd className="mt-1 text-slate-900">{user?.full_name}</dd>
-            </div>
+            {user?.full_name ? (
+              <div>
+                <dt className="text-xs font-medium uppercase tracking-wide text-slate-500">Full Name</dt>
+                <dd className="mt-1 text-slate-900">{user.full_name}</dd>
+              </div>
+            ) : null}
             <div>
               <dt className="text-xs font-medium uppercase tracking-wide text-slate-500">Email</dt>
               <dd className="mt-1 text-slate-900">{user?.email}</dd>

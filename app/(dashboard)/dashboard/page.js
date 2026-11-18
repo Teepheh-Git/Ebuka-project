@@ -48,7 +48,7 @@ export default async function DashboardPage() {
         <section className="grid gap-6 rounded-2xl border border-slate-200 bg-white p-5 shadow-sm sm:p-6 lg:grid-cols-5">
           <div className="flex flex-col justify-between gap-4 lg:col-span-2">
             <div>
-              <p className="text-sm font-medium text-blue-600">Welcome back, {user?.display_name}</p>
+              <p className="text-sm font-medium text-blue-600">Welcome back{user?.display_name ? `, ${user.display_name}` : ""}</p>
               <h2 className="mt-1 text-2xl font-semibold tracking-tight text-slate-900">
                 {open === 0 ? "No open tickets right now" : `${open} open ${open === 1 ? "ticket" : "tickets"} to review`}
               </h2>
